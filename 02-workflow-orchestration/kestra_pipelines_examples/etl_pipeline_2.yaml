@@ -42,9 +42,8 @@ tasks:
 
       enriched_summary = pd.merge(product_sales_summary, products_df[['product_id','product_name','product_category','brand']], on='product_id',
       how='inner')
-      [final_column_order]
 
-      product_summary = enriched_summary.sort_values(by='product_id')
+      product_summary = enriched_summary[final_column_order]
       product_summary.to_csv("product_summary.csv", index=False)
 
   - id: create
@@ -53,6 +52,7 @@ tasks:
     username: root
     password: "{{kv('PG_PASSWORD')}}"
     sql: |
+        DROP TABLE IF EXISTS product_summary;
         CREATE TABLE IF NOT EXISTS product_summary (
           product_id INT,
           product_name VARCHAR(255),
@@ -61,7 +61,7 @@ tasks:
           total_quantity_sold INT,
           total_revenue DECIMAL(10, 2)
         );
-        TRUNCATE TABLE product_summary;
+        --TRUNCATE TABLE product_summary;
 
   - id: load_to_db
     type: io.kestra.plugin.jdbc.postgresql.CopyIn
