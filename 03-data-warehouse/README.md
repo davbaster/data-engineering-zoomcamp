@@ -74,7 +74,7 @@ After running, the real data (Bytes Processed) was 155.12MB
 Query results: 262
 
 
-#Question 3. Understanding columnar storage
+# Question 3. Understanding columnar storage
 Write a query to retrieve the PULocationID from the table (not the external table) in BigQuery. Now write a query to retrieve the PULocationID and DOLocationID on the same table.
 
 
@@ -100,4 +100,87 @@ FROM `project-a44b4f29-ed58-4b15-810.nytaxi.yellow_tripdata`;
 It shows the query will process 310.24MB when run.
 
 
-#
+# Question 4. Counting zero fare trips
+How many records have a fare_amount of 0?
+
+128,210
+546,578
+20,188,016
+**8,333
+
+SELECT COUNT(*) AS zero_fare_trips
+FROM `project-a44b4f29-ed58-4b15-810.nytaxi.yellow_tripdata` WHERE fare_amount = 0;
+
+This query processed 155.12 MB when run.
+
+# Question 5. Partitioning and clustering
+What is the best strategy to make an optimized table in Big Query if your query will always filter based on tpep_dropoff_datetime and order the results by VendorID (Create a new table with this strategy)
+
+**Partition by tpep_dropoff_datetime and Cluster on VendorID
+Cluster on by tpep_dropoff_datetime and Cluster on VendorID
+Cluster on tpep_dropoff_datetime Partition by VendorID
+Partition by tpep_dropoff_datetime and Partition by VendorID
+
+BigQuery query:
+
+CREATE OR REPLACE TABLE nytaxi.optimized_trips
+PARTITION BY DATE(tpep_dropoff_datetime)
+CLUSTER BY VendorID AS
+SELECT *
+FROM `project-a44b4f29-ed58-4b15-810.nytaxi.yellow_tripdata`;
+
+This query will process 2.72 GB when run.
+
+
+# Question 6. Partition benefits
+Write a query to retrieve the distinct VendorIDs between tpep_dropoff_datetime 2024-03-01 and 2024-03-15 (inclusive)
+
+Use the materialized table you created earlier in your from clause and note the estimated bytes. Now change the table in the from clause to the partitioned table you created for question 5 and note the estimated bytes processed. What are these values?
+
+Choose the answer which most closely matches.
+
+12.47 MB for non-partitioned table and 326.42 MB for the partitioned table
+**310.24 MB for non-partitioned table and 26.84 MB for the partitioned table
+5.87 MB for non-partitioned table and 0 MB for the partitioned table
+310.31 MB for non-partitioned table and 285.64 MB for the partitioned table
+
+Query in materialized nytaxi.yellow_tripdata:
+
+SELECT DISTINCT VendorID
+FROM `project-a44b4f29-ed58-4b15-810.nytaxi.yellow_tripdata`
+WHERE tpep_dropoff_datetime BETWEEN '2024-03-01' AND '2024-03-15';
+
+This query will process 310.24 MB when run.
+
+
+Query in nytaxi.optimized_trips
+
+SELECT DISTINCT VendorID
+FROM nytaxi.optimized_trips
+WHERE tpep_dropoff_datetime BETWEEN '2024-03-01' AND '2024-03-15';
+
+This query will process 26.84 MB when run.
+
+
+# Question 7. External table storage
+Where is the data stored in the External Table you created?
+
+Big Query
+Container Registry
+** GCP Bucket
+Big Table
+
+# Question 8. Clustering best practices
+It is best practice in Big Query to always cluster your data:
+
+True
+**False
+
+# Question 9. Understanding table scans
+No Points: Write a SELECT count(*) query FROM the materialized table you created. How many bytes does it estimate will be read? Why?
+
+SELECT count(*)
+FROM `project-a44b4f29-ed58-4b15-810.nytaxi.yellow_tripdata`
+
+0B
+Because BigQuery must scan all the columns in the dataset. It does not mantain a metadata with the information of the size of table. 
