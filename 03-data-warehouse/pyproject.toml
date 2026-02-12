@@ -6,6 +6,15 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "dlt>=1.21.0",
+    "google>=3.0.0",
+    "google-cloud-storage>=3.9.0",
     "pandas>=3.0.0",
+    "pyarrow>=23.0.0",
     "requests>=2.32.5",
+]
+
+[dependency-groups]
+dev = [
+    "jupyter>=1.1.1",
+    "lab>=8.8",
 ]
