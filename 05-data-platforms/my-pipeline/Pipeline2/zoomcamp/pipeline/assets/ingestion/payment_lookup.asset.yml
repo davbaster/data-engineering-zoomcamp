@@ -1,0 +1,25 @@
+# Seed Asset: Load a static payment type lookup table
+# This provides a reference for payment method IDs used in taxi data.
+
+name: ingestion.payment_lookup
+
+type: duckdb.seed
+
+parameters:
+  path: payment_lookup.csv
+
+# Lookup should have stable primary keys and quality checks
+columns:
+  - name: payment_type_id
+    type: integer
+    description: Unique identifier for payment type
+    primary_key: true
+    checks:
+      - name: not_null
+      - name: unique
+  - name: payment_type_name
+    type: string
+    description: Human-readable payment type name
+    checks:
+      - name: not_null
+
