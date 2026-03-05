@@ -25,6 +25,9 @@ logs/queries
 data/
 *.csv
 *.parquet
+*.crc
+*.dlt_secrets
+_SUCCESS
 *.json
 *.db
 *.sqlite
