@@ -13,6 +13,6 @@ dependencies = [
 [dependency-groups]
 dev = [
     "jupyter>=1.1.1",
-    "jupyter-ai>=2.31.7",
+    "jupyter-ai==3.0.0b9",
     "lab>=8.9",
 ]
