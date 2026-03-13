@@ -22,8 +22,8 @@ def ride_from_row(row):
         DOLocationID=int(row['DOLocationID']),
         trip_distance=float(row['trip_distance']),
         total_amount=float(row['total_amount']),
-        lpep_pickup_datetime=int(row['lpep_pickup_datetime'].timestamp() * 1000),
-        lpep_dropoff_datetime=int(row['lpep_dropoff_datetime'].timestamp() * 1000),
+        lpep_pickup_datetime=str(int(row['lpep_pickup_datetime'].timestamp() * 1000)), #turning pickup datetime into epoch milliseconds and then into string for serialization purposes
+        lpep_dropoff_datetime=str(int(row['lpep_dropoff_datetime'].timestamp() * 1000)),
         passenger_count=int(row['passenger_count']),
         tip_amount=float(row['tip_amount']),
     )

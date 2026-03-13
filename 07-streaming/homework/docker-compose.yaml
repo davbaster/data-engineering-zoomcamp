@@ -77,4 +77,4 @@ services:
         jobmanager.rpc.address: jobmanager
         taskmanager.memory.process.size: 1728m
         taskmanager.numberOfTaskSlots: 15
-        parallelism.default: 3
+        parallelism.default: 1

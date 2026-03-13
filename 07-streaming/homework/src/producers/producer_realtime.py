@@ -47,7 +47,7 @@ def make_ride(delay_seconds=0):
         DOLocationID=random.choice(DROPOFF_LOCATIONS),
         trip_distance=round(random.uniform(0.5, 20.0), 2),
         total_amount=round(random.uniform(5.0, 100.0), 2),
-        tpep_pickup_datetime=now_ms,
+        lpep_pickup_datetime=now_ms,
     )
 
 
@@ -61,7 +61,7 @@ producer = KafkaProducer(
     value_serializer=ride_serializer,
 )
 
-topic_name = 'rides'
+topic_name = 'green-trips'
 count = 0
 
 print("Sending events (Ctrl+C to stop)...")
@@ -73,11 +73,11 @@ try:
         if random.random() < 0.2:
             delay = random.randint(3, 10)
             ride = make_ride(delay_seconds=delay)
-            ts = datetime.fromtimestamp(ride.tpep_pickup_datetime / 1000, tz=timezone.utc)
+            ts = datetime.fromtimestamp(ride.lpep_pickup_datetime / 1000, tz=timezone.utc)
             print(f"  LATE ({delay}s) -> PU={ride.PULocationID} ts={ts:%H:%M:%S}")
         else:
             ride = make_ride()
-            ts = datetime.fromtimestamp(ride.tpep_pickup_datetime / 1000, tz=timezone.utc)
+            ts = datetime.fromtimestamp(ride.lpep_pickup_datetime / 1000, tz=timezone.utc)
             print(f"  on time   -> PU={ride.PULocationID} ts={ts:%H:%M:%S}")
 
         producer.send(topic_name, value=ride)
