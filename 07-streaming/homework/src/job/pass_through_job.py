@@ -64,7 +64,7 @@ def log_processing():
             DOLocationID,
             trip_distance,
             total_amount,
-            TO_TIMESTAMP_LTZ(tpep_pickup_datetime, 3) as pickup_datetime
+            TO_TIMESTAMP_LTZ(lpep_pickup_datetime, 3) as pickup_datetime
         FROM {source_table}
         """
     ).wait()
