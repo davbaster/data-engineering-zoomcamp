@@ -14,7 +14,7 @@ services:
       - --kafka-addr
       - PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092
       - --advertise-kafka-addr
-      - PLAINTEXT://redpanda:29092,OUTSIDE://FF
+      - PLAINTEXT://redpanda:29092,OUTSIDE://localhost:9092
       - --pandaproxy-addr
       - PLAINTEXT://0.0.0.0:28082,OUTSIDE://0.0.0.0:8082
       - --advertise-pandaproxy-addr
@@ -52,6 +52,7 @@ services:
     volumes:
       - ./:/opt/flink/usrlib
       - ./src/:/opt/src
+      - ./.flink-checkpoints:/opt/flink/checkpoints
     command: jobmanager
     environment:
       - |
@@ -68,6 +69,7 @@ services:
     volumes:
       - ./:/opt/flink/usrlib
       - ./src/:/opt/src
+      - ./.flink-checkpoints:/opt/flink/checkpoints
     depends_on:
       - jobmanager
     command: taskmanager --taskmanager.registration.timeout 5 min

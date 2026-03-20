@@ -1,4 +1,5 @@
 from pyflink.datastream import StreamExecutionEnvironment
+from pyflink.common import Configuration
 from pyflink.table import EnvironmentSettings, StreamTableEnvironment
 
 
@@ -55,6 +56,15 @@ def create_sink_postgres_table(t_env: StreamTableEnvironment) -> str:
 
 def run() -> None:
     env = StreamExecutionEnvironment.get_execution_environment()
+    config = Configuration()
+    # Use the bind-mounted project directory so JobManager and TaskManager
+    # share the same checkpoint files across containers.
+    config.set_string("execution.checkpointing.storage", "filesystem")
+    config.set_string(
+        "state.checkpoints.dir",
+        "file:///opt/flink/checkpoints/q5_session_trips_sink",
+    )
+    env.configure(config)
     env.enable_checkpointing(10 * 1000)
     env.set_parallelism(1)
 

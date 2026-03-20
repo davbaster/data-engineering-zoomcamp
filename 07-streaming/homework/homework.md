@@ -133,8 +133,38 @@ event_timestamp AS TO_TIMESTAMP(lpep_pickup_datetime, 'yyyy-MM-dd HH:mm:ss'),
 WATERMARK FOR event_timestamp AS event_timestamp - INTERVAL '5' SECOND
 ```
 
+
 Before running the Flink jobs, create the necessary PostgreSQL tables
 for your results.
+
+Login to container:
+docker exec -it homework-postgres-1 sh
+Login to sql:
+psql -h localhost -p 5432 -U postgres -d postgres
+
+  CREATE TABLE q4_window_trips (
+      window_start TIMESTAMP,
+      pulocationid INTEGER,
+      num_trips BIGINT,
+      PRIMARY KEY (window_start, pulocationid)
+  );
+
+  CREATE TABLE q5_session_trips_sink (
+      session_start TIMESTAMP,
+      session_end TIMESTAMP,
+      pulocationid INTEGER,
+      num_trips BIGINT,
+      PRIMARY KEY (session_start, session_end, pulocationid)
+  );
+
+  CREATE TABLE q6_hourly_tips_sink (
+      window_start TIMESTAMP,
+      total_tip_amount DOUBLE PRECISION,
+      PRIMARY KEY (window_start)
+  );
+
+  Check tables command:
+  \dt
 
 Important notes for the Flink jobs:
 
@@ -177,6 +207,10 @@ Which `PULocationID` had the most trips in a single 5-minute window?
 - 75
 - 166
 
+job:
+docker compose exec jobmanager ./bin/flink run \
+    -py /opt/src/job/q4_tumbling_pu.py \
+    --pyFiles /opt/src -d
 
 ## Question 5. Session window - longest streak
 
